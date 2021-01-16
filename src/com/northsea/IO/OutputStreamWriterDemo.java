@@ -26,7 +26,7 @@ public class OutputStreamWriterDemo {
         // 写数据
         // public void write(int c):写一个字符
         // osw.write('a');
-        osw.write(97);
+        // osw.write(97);
         // 为什么数据没有进去呢?
         // 原因是：字符 = 2字节
         // 文件中数据存储的基本单位是字节。
