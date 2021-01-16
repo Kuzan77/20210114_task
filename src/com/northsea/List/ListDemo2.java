@@ -24,6 +24,7 @@ public class ListDemo2 {
         list.add("java");
         list.add("java");
         list.add(null);
+        list.add(100);
 
         // 遍历集合
         Iterator it = list.iterator();
@@ -32,4 +33,8 @@ public class ListDemo2 {
             System.out.println(s);
         }
     }
+
+    /**
+     * 给定存储指定类型(String)数据的集合, 试添加整型数据
+     */
 }

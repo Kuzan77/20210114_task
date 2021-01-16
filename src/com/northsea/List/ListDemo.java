@@ -14,7 +14,7 @@ public class ListDemo {
     @Test
     public void ListDemo() {
         // 创建集合对象
-        List list = new ArrayList();
+        List list = new ArrayList();        // 接口不能实例化
 
         // 创建字符串并添加字符串
         list.add("hello");
