@@ -22,6 +22,7 @@ public class OutputStreamWriterDemo {
     @Test
     public void OutputStreamWriterDemo() throws IOException {
         // 创建对象
+        //将字符流转换成字节流
         OutputStreamWriter osw = new OutputStreamWriter(new FileOutputStream("osw.txt"));
         // 写数据
         // public void write(int c):写一个字符
@@ -52,10 +53,5 @@ public class OutputStreamWriterDemo {
         osw.close();
         // java.io.IOException: Stream closed
         osw.write("山东大学软件学院", 2, 3);
-    }
-
-
-    public void CopyFileDemo() {
-
     }
 }

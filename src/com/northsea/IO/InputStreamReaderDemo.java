@@ -22,6 +22,7 @@ public class InputStreamReaderDemo {
     @Test
     public void InputStreamReaderDemo() throws IOException {
         // 创建对象
+        //将字节流转换成字符流
         InputStreamReader isr = new InputStreamReader(new FileInputStream("isr.txt"));
 
         // int read():一次读取一个字符
@@ -34,7 +35,9 @@ public class InputStreamReaderDemo {
         char[] chars = new char[1024];
         int len = 0;
         while ((len = isr.read(chars)) != -1) {
-            System.out.println(new String(chars, 0, len));
+            // System.out.println(new String(chars, 0, len));
+            // 在这里不用进行类型转换了
+            System.out.println(chars);
         }
 
         // 释放资源
