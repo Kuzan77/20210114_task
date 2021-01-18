@@ -26,7 +26,7 @@ public class Test {
                     String userName = sc.nextLine();
                     System.out.println("请输入密码: ");
                     String passWord = sc.nextLine();
-                    boolean state = userDao.Login(userName, passWord);
+                    boolean state = userDao.userLogin(userName, passWord);
                     if (state) {
                         System.out.println("----------恭喜您登录成功----------");
                         System.out.println("是否进行猜数字游戏 【1】是   【2】否 ");
@@ -54,8 +54,7 @@ public class Test {
                     System.out.println("请输入密码: ");
                     String password = sc.nextLine();
                     User user = new User(username, password);
-                    userDao.Register(user);
-
+                    userDao.userRegister(user);
                     break;
                 case "3":
                     System.out.println("退出系统成功!");
