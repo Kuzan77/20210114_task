@@ -6,6 +6,13 @@ import com.northsea.UserLogin.pojo.User;
 import java.io.*;
 
 public class UserDaoImpl implements UserDao {
+    /**
+     * 登录
+     * @param userName
+     * @param passWord
+     * @return
+     * @throws IOException
+     */
     @Override
     public boolean Login(String userName, String passWord) throws IOException {
         // 创建字符缓冲输入流对象
@@ -19,10 +26,16 @@ public class UserDaoImpl implements UserDao {
                 flag = true;
             }
         }
+        // 释放资源
         br.close();
         return flag;
     }
 
+    /**
+     * 注册
+     * @param user
+     * @throws IOException
+     */
     @Override
     public void Register(User user) throws IOException {
         if (user != null) {
@@ -48,6 +61,12 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    /**
+     * 注册之前查询用户是否已存在
+     * @param userName
+     * @return
+     * @throws IOException
+     */
     public boolean queryUser(String userName) throws IOException {
         // 创建字符缓冲输入流对象
         BufferedReader br = new BufferedReader(new FileReader("user.txt"));
