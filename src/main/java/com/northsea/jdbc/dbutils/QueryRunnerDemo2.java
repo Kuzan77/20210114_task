@@ -1,9 +1,9 @@
 package com.northsea.jdbc.dbutils;
 
+import com.northsea.jdbc.pojo.Student;
 import com.northsea.jdbc.util.JdbcUtils;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.MapHandler;
-import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.apache.commons.dbutils.handlers.*;
 import org.junit.Test;
 
 import javax.sql.DataSource;
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @author ：mmzs
  * @date ：Created in 2021/1/24 21:23
- * QueryRunner 之查询
+ * QueryRunner 之查询:
  * QueryRunner 的查询方法是：
  * public <T> T query(String sql, ResultSetHandler<T> rh, Object… params)
  * public <T> T query(Connection con, String sql, ResultSetHandler<T> rh, Object… params)
@@ -39,65 +39,147 @@ import java.util.Map;
  * 据放到 List 中。
  * ⚫ ScalarHandler：单行单列处理器！把结果集转换成 Object。一般用于聚集查询，例如 select
  * count(*) from tab_student。
+ *
+ *
+ * ArrayHandler：把结果集中的第一行数据转成对象数组。
+ * ArrayListHandler：把结果集中的每一行数据都转成一个对象数组，再存放到List中。
+ * BeanHandler：将结果集中的第一行数据封装到一个对应的JavaBean实例中。
+ * BeanListHandler：将结果集中的每一行数据都封装到一个对应的JavaBean实例中，存放到List里。//重点
+ * MapHandler：将结果集中的第一行数据封装到一个Map里，key是列名，value就是对应的值。//重点
+ * MapListHandler：将结果集中的每一行数据都封装到一个Map里，然后再存放到List
+ * ColumnListHandler：将结果集中某一列的数据存放到List中。
+ * KeyedHandler(name)：将结果集中的每一行数据都封装到一个Map里(List<Map>)，再把这些map再存到一个map里，其key为指定的列。
+ * ScalarHandler:将结果集第一行的某一列放到某个对象中。//重点
  */
 public class QueryRunnerDemo2 {
+
+    /**
+     * 单行多列
+     * MapHandler()
+     * 将结果集中的第一行数据封装到一个Map里，key是列名，value就是对应的值。//重点
+     */
     @Test
-    public void fun1() throws SQLException {
+    public void fun1() {
+        // 获取连接池数据源
         DataSource ds = JdbcUtils.getDataSource();
+        // 创建QueryRunner对象
         QueryRunner qr = new QueryRunner(ds);
         String sql = "select * from user where uid=?";
-        Map<String,Object> map = qr.query(sql, new MapHandler(), "U_1002");
+        Map<String,Object> map = null;
+        // 执行, 并把结果集转换成 Map<String,Object>
+        try {
+            map = qr.query(sql, new MapHandler(), "U_1002");
+        } catch (SQLException e) {
+            System.out.println("查询失败!!!");
+        }
         System.out.println(map);
     }
-//    @Test
-//    public void fun2() throws SQLException {
-//        DataSource ds = JdbcUtils.getDataSource();
-//        QueryRunner qr = new QueryRunner(ds);
-//        String sql = "select * from tab_student";
-//        List<Map<String,Object>> list = qr.query(sql, new MapListHandler());
-//        for(Map<String,Object> map : list) {
-//            System.out.println(map);
-//        }
-//    }
-//    @Test
-//    public void fun3() throws SQLException {
-//        DataSource ds = JdbcUtils.getDataSource();
-//        QueryRunner qr = new QueryRunner(ds);
-//        String sql = "select * from tab_student where number=?";
-//        Student stu = qr.query(sql, new BeanHandler<Student>(Student.class),
-//                "S_2000");
-//        System.out.println(stu);
-//    }
-//    @Test
-//    public void fun4() throws SQLException {
-//        DataSource ds = JdbcUtils.getDataSource();
-//        QueryRunner qr = new QueryRunner(ds);
-//        String sql = "select * from tab_student";
-//        List<Student> list = qr.query(sql, new
-//                BeanListHandler<Student>(Student.class));
-//        for(Student stu : list) {
-//            System.out.println(stu);
-//        }
-//    }
-//
-//    @Test
-//    public void fun5() throws SQLException {
-//        DataSource ds = JdbcUtils.getDataSource();
-//        QueryRunner qr = new QueryRunner(ds);
-//        String sql = "select * from tab_student";
-//        List<Object> list = qr.query(sql, new ColumnListHandler("name"));
-//        for(Object s : list) {
-//            System.out.println(s);
-//        }
-//    }
-//    @Test
-//    public void fun6() throws SQLException {
-//        DataSource ds = JdbcUtils.getDataSource();
-//        QueryRunner qr = new QueryRunner(ds);
-//        String sql = "select count(*) from tab_student";
-//        Number number = (Number)qr.query(sql, new ScalarHandler());
-//        int cnt = number.intValue();
-//        System.out.println(cnt);
-//    }
 
+    /**
+     *  多行多列
+     *  MapListHandler()
+     *  将结果集中的每一行数据都封装到一个Map里，然后再存放到List
+     */
+    @Test
+    public void fun2() {
+        DataSource ds = JdbcUtils.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        String sql = "SELECT * FROM user";
+        try {
+            List<Map<String, Object>>list = qr.query(sql, new MapListHandler());
+            for (Map<String, Object> map : list) {
+                System.out.println(map);
+            }
+        } catch (SQLException se) {
+            System.out.println("查询失败!!!");
+        }
+    }
+
+    // BeanHandler：将结果集中的第一行数据封装到一个对应的JavaBean实例中。
+    @Test
+    public void fun3() {
+        DataSource ds = JdbcUtils.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+
+        String sql = "SELECT * FROM user where uid = ?";
+        try {
+            Student stu = qr.query(sql, new BeanHandler<Student>(Student.class), "U_1001");
+            System.out.println(stu);
+        } catch (SQLException throwables) {
+            System.out.println("查询失败!!!");
+        }
+    }
+
+
+    // BeanListHandler：将结果集中的每一行数据都封装到一个对应的JavaBean实例中，存放到List里。//重点
+    @Test
+    public void fun4() {
+        DataSource ds = JdbcUtils.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        String sql = "SELECT * FROM user";
+        List<Student> list = null;
+        try {
+            list = qr.query(sql, new BeanListHandler<>(Student.class));
+        } catch (SQLException throwables) {
+            System.out.println("查询失败");
+        }
+        for(Student stu : list) {
+            System.out.println(stu);
+        }
+    }
+
+
+    // ColumnListHandler：将结果集中某一列的数据存放到List中
+    @Test
+    public void fun5() {
+        DataSource ds = JdbcUtils.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        String sql = "SELECT * FROM user";
+        List<Object> list = null;
+        try {
+            list = qr.query(sql, new ColumnListHandler<>("uid"));
+        } catch (SQLException throwables) {
+            System.out.println("查询失败");
+        }
+        for(Object s : list) {
+            System.out.println(s);
+        }
+    }
+    // 将结果集第一行的某一列放到某个对象中。//重点
+    @Test
+    public void fun6() {
+        DataSource ds = JdbcUtils.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        String sql = "SELECT count(*) FROM user";
+        Number number = null;
+        try {
+            number = (Number)qr.query(sql, new ScalarHandler());
+        } catch (SQLException throwables) {
+            System.out.println("查询失败!!!");
+        }
+        int cnt = number.intValue();
+        System.out.println(cnt);
+    }
+
+    /**
+     * QueryRunner 之批处理
+     * QueryRunner 还提供了批处理方法：batch()。
+     * 更新一行记录时需要指定一个 Object[]为参数，如果是批处理，那么就要指定 Object[][]为参数。
+     * 即多个 Object[]就是 Object[][]了，其中每个 Object[]对应一行记录：
+     */
+    @Test
+    public void fun10() {
+        DataSource ds = JdbcUtils.getDataSource();
+        QueryRunner qr = new QueryRunner(ds);
+        String sql = "insert into user values(?,?,?)";
+        Object[][] params = new Object[10][];  //表示要插入10行记录
+        for (int i = 0; i < params.length; i++) {
+            params[i] = new Object[]{"S_300" + i, "name" + i, i%2==0?"男":"女"};
+        }
+        try {
+            qr.batch(sql, params);
+        } catch (SQLException se) {
+            System.out.println("添加失败!!!");
+        }
+    }
 }

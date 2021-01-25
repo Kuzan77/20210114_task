@@ -20,7 +20,11 @@ public class TestJdbcUtils {
     @Test
     public void TestJDBCUtil() {
         // 1.获取连接
-        conn = JdbcUtils.getConnection();
+        try {
+            conn = JdbcUtils.getConnection();
+        } catch (SQLException throwables) {
+            System.out.println("连接异常!!!");
+        }
         // 2.生成发送器(语句发送器)
         // 通过Connection得到Statement对象
         // 使用Statement发送sql语句

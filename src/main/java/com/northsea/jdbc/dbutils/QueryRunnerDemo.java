@@ -3,6 +3,7 @@ import com.northsea.jdbc.util.JdbcUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -18,9 +19,32 @@ import java.sql.SQLException;
  */
 public class QueryRunnerDemo {
     @Test
-    public void fun1() throws SQLException {
+    public void fun1() {
+        // 创建Connection对象
+        Connection conn = null;
+        // 创建QueryRunner对象
         QueryRunner qr = new QueryRunner();
+        try {
+            // 获取连接
+            conn = JdbcUtils.getConnection();
+        } catch (SQLException se) {
+            System.out.println("连接异常!!!");
+        }
         String sql = "insert into user values(?,?,?)";
-        qr.update(JdbcUtils.getConnection(), sql, "u2", "LiSi", "123456");
+        try {
+            // 使用QueryRunner 的 update()方法可以用来执行sql语句
+            qr.update(conn, sql, "u4", "Jack", "123456");
+        } catch (SQLException se) {
+            System.out.println("更新数据库失败!!!");
+        }finally {
+            if (conn != null) {
+                try {
+                    // 关闭资源
+                    conn.close();
+                } catch (SQLException se) {
+                    System.out.println("关闭Connection失败!!!");
+                }
+            }
+        }
     }
 }

@@ -109,17 +109,17 @@ public class JdbcUtils {
     /**
      * c3p0数据库连接池
      */
+    // 加载配置文件
     private static DataSource dataSource = new ComboPooledDataSource("oracle-config");
 
+    // 数据源
     public static DataSource getDataSource() {
         return dataSource;
     }
-    public static Connection getConnection() {
-        try {
-            return dataSource.getConnection();
-        } catch (Exception se) {
-            throw new RuntimeException();
-        }
+
+    // 获取连接
+    public static Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
 
